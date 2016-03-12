@@ -17,9 +17,10 @@ var (
 // Struct encapsulates a struct type to provide several high level functions
 // around the struct.
 type Struct struct {
-	raw     interface{}
-	value   reflect.Value
-	TagName string
+	raw             interface{}
+	value           reflect.Value
+	TagName         string
+	IgnoreOmitEmpty bool
 }
 
 // New returns a new *Struct with the struct s. It panics if the s's kind is
@@ -90,7 +91,7 @@ func (s *Struct) Map() map[string]interface{} {
 
 		// if the value is a zero value and the field is marked as omitempty do
 		// not include
-		if tagOpts.Has("omitempty") {
+		if !s.IgnoreOmitEmpty && tagOpts.Has("omitempty") {
 			zero := reflect.Zero(val.Type()).Interface()
 			current := val.Interface()
 
